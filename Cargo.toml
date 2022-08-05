@@ -1,0 +1,13 @@
+[package]
+name = "md-copybot"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+regex = "1.5.5"
+poise = { version = "0.3.0"}
+tokio = { version = "1", features = ["full"] }
+dotenv = "0.13.0"
+serenity = { version = "0.11", features = ["gateway", "model"], default-features = false }
