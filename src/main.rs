@@ -1,5 +1,6 @@
 #![warn(clippy::str_to_string)]
 mod event_listener;
+use regex::Regex;
 
 use poise::serenity_prelude as serenity;
 use std::{collections::HashMap, env::var};
@@ -57,11 +58,52 @@ async fn raw_markdown(ctx: Context<'_>, msg: serenity::Message) -> Result<(), Er
     let content = content.replace("`", "\\`");
 
     // escape all markdown formatting
-    let content = content.replace("*", "\\*");
-    let content = content.replace("_", "\\_");
-    let content = content.replace("~", "\\~");
-    let content = content.replace(">", "\\>");
-    let content = content.replace("|", "\\|");
+    // lists
+    let regex = Regex::new(r"(\n\s*[-+*]\s)").unwrap();
+    let content = regex.replace_all(&content, "\n\\$1");
+
+    // code blocks
+    let regex = Regex::new(r"(```\w*)").unwrap();
+    let content = regex.replace_all(&content, "\\$1");
+
+    // inline code
+    let regex = Regex::new(r"(`[^`]*`)").unwrap();
+    let content = regex.replace_all(&content, "\\$1");
+
+    // block quotes
+    let regex = Regex::new(r"(\n\s*>.+)").unwrap();
+    let content = regex.replace_all(&content, "\n\\$1");
+
+    // links
+    let regex = Regex::new(r"(\[.+\]\(.+\))").unwrap();
+    let content = regex.replace_all(&content, "\\$1");
+
+    // bold
+    let regex = Regex::new(r"(\*\*.+\*\*)").unwrap();
+    let content = regex.replace_all(&content, "\\$1");
+
+    // italics
+    let regex = Regex::new(r"(\*.+\*)").unwrap();
+    let content = regex.replace_all(&content, "\\$1");
+
+    // italics 2
+    let regex = Regex::new(r"(_.+_)").unwrap();
+    let content = regex.replace_all(&content, "\\$1");
+
+    // underline
+    let regex = Regex::new(r"(__.+__)").unwrap();
+    let content = regex.replace_all(&content, "\\$1");
+
+    // strikethrough
+    let regex = Regex::new(r"(~~.+~~)").unwrap();
+    let content = regex.replace_all(&content, "\\$1");
+
+    // spoiler
+    let regex = Regex::new(r"(\|\|.+\|\|)").unwrap();
+    let content = regex.replace_all(&content, "\\$1");
+
+    
+
 
 
 
